@@ -27,9 +27,9 @@
                 display: none;
             }
 
-            .pathformWrapper >table .formList > thead {
+            .pathformWrapper > table .formList > thead {
                 color: black;
-                border: 1px solid #000000;
+                border: 1px solid black;
             }
 
             @page {
@@ -69,9 +69,10 @@
                 <div class="searchBar">
                     <select class="w100" id="SystemTypeS" name="SystemTypeS" v-model="SystemTypeS">
                         <option selected value="All">全部</option>
-                        <option value="Code">系統代碼</option>
-                        <option value="Name">系統名稱</option>
-                        <option value="Describe">系統描述</option>
+                        <option value="Yell">警示程度-黃色</option>
+                        <option value="Green">警示程度-綠色</option>
+                        <option value="Describe">說明</option>
+                        <option value="Time">時間</option>
                     </select>
                     <input type="text" id="SystemTypeSText" name="SystemTypeSText" v-model="SystemTypeSText" class="w300">
                     <button type="button" v-on:click="SystemTypeListSelect()"></button>
@@ -88,10 +89,10 @@
                         </thead>
                         <tbody>
                             <tr v-if="SystemTypeSL.length==0 && Loading==0">
-                                <td colspan="3">無資料</td>
+                                <td colspan="4">無資料</td>
                             </tr>
                             <tr v-if="SystemTypeSL.length==0 && Loading==1">
-                                <td colspan="3">
+                                <td colspan="4">
                                     <div class="loading">
                                         <span></span>
                                         <span></span>
@@ -139,7 +140,6 @@
                 SystemTypeS: "All",//主系統列表篩選項目
                 
                 Loading: "0",
-                SLoading: "0",
             },
             mounted: function () {
                 this.datepicker();
@@ -202,21 +202,27 @@
                     self.SystemTypeSL = [];
                     if (self.SystemTypeS == "All") {
                         self.GetSystemTypeList();
-                    } else if (self.SystemTypeS == "Code") {
+                    } else if (self.SystemTypeS == "Yell") {
                         self.SystemTypeALL.forEach(function (item, index) {
-                            if (((item.SystemTypeCode).toString()).includes(self.SystemTypeSText)) {
+                            if (item.reportColor=="黃色") {
                                 self.SystemTypeSL.push(item);
                             }
                         });
-                    } else if (self.SystemTypeS == "Name") {
+                    } else if (self.SystemTypeS == "Green") {
                         self.SystemTypeALL.forEach(function (item, index) {
-                            if ((item.SystemTypeName).includes(self.SystemTypeSText)) {
+                            if (item.reportColor == "綠色") {
                                 self.SystemTypeSL.push(item);
                             }
                         });
                     } else if (self.SystemTypeS == "Describe") {
                         self.SystemTypeALL.forEach(function (item, index) {
-                            if ((item.SystemTypeDescribe).includes(self.SystemTypeSText)) {
+                            if ((item.reportContent).includes(self.SystemTypeSText)) {
+                                self.SystemTypeSL.push(item);
+                            }
+                        });
+                    } else if (self.SystemTypeS == "Time") {
+                        self.SystemTypeALL.forEach(function (item, index) {
+                            if ((item.earthquakeInfo.originTime).includes(self.SystemTypeSText)) {
                                 self.SystemTypeSL.push(item);
                             }
                         });
